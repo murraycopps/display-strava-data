@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import LoginData from "../scripts/logindata";
 
-const API_URL = "https://www.strava.com/api/v3";
-
 interface Props {
   query: {
     code: string;

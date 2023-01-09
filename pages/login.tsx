@@ -106,7 +106,7 @@ export default function LoginPage({clientID, url}: { clientID: string, url: stri
   );
 }
 
-export function getStaticProps(context: any) {
+export function getServerSideProps(context: any) {
   const host = context.req.headers.host;
   const url = host.includes("localhost") ? "http://" : "https://";
   const fullUrl = url + host;

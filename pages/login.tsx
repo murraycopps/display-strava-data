@@ -12,6 +12,7 @@ export default function LoginPage({
   users: any[];
   url: string;
 }) {
+    console.log("login page", users);
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -113,13 +114,13 @@ export default function LoginPage({
   );
 }
 
-export function getServerSideProps(context: any) {
+export async function getServerSideProps(context: any) {
   const host = context.req.headers.host;
   const url = host.includes("localhost") ? "http://" : "https://";
   const fullUrl = url + host;
   let users = [] as any[];
-  axios
-    .get(`${url}/api/users`)
+  await axios
+    .get(`${fullUrl}/api/users`)
     .then((response) => {
       users = response.data.data;
     })

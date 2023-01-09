@@ -11,8 +11,8 @@ export default async function handler(req, res) {
 
   switch (req.method) {
     case "POST":
-      await db.collection("users").insertOne(bodyObject);
-      res.json({ status: 200, data: "posted" });
+      const results = await db.collection("users").insertOne(bodyObject);
+      res.json({ status: 200, data: results });
       break;
     case "GET":
       const allPosts = await db.collection("users").find({}).toArray();

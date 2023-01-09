@@ -3,17 +3,18 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import LoginData from "../scripts/logindata";
 
-export default function LoginPage() {
+export default function LoginPage({clientID, url}: { clientID: string, url: string }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [users, setUsers] = useState([] as any);
+  const [newUser, setNewUser] = useState(false);
 
   useEffect(() => {
     // get list of users from server
     axios
-      .get("http://localhost:3000/api/users")
+      .get(`${url}/api/users`)
       .then((response) => {
         setUsers(response.data.data);
       })
@@ -28,14 +29,47 @@ export default function LoginPage() {
       (user: { username: string; password: string }) =>
         user.username === username && user.password === password
     );
+
+    // check if username is used and if it is a new user
+    const userExists = users.find(
+      (user: { username: string }) => user.username === username
+    );
+    if (newUser && userExists) {
+      setErrorMessage("Username already exists");
+      return;
+    }
+
     if (user) {
-        router.push(
-          `https://www.strava.com/oauth/authorize?client_id=${process.env.STRAVA_CLIENT_ID}&response_type=code&redirect_uri=http://localhost:3000/data&approval_prompt=force&scope=activity:read_all`
-        );
       LoginData.Login(user.accessToken);
       router.push("/");
     } else {
-      setErrorMessage("Invalid username or password");
+      if (newUser) {
+        // check if username and password is valid
+        if (username.length < 3 || password.length < 3) {
+          setErrorMessage(
+            "Username and password must be at least 3 characters long"
+          );
+          return;
+        }
+
+        // create new user
+        axios
+          .post(`${url}/api/users`, {
+            username: username,
+            password: password,
+          })
+          .then((response) => {
+            setErrorMessage("Account created");
+            router.push(
+              `https://www.strava.com/oauth/authorize?client_id=${clientID}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all`
+            );
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      } else {
+        setErrorMessage("Incorrect username or password");
+      }
     }
   }
 
@@ -61,9 +95,25 @@ export default function LoginPage() {
         <br />
         {errorMessage && <p>{errorMessage}</p>}
         <button type="button" onClick={handleClick}>
-          Login
+          {newUser ? "Create Account" : "Login"}
         </button>
       </form>
+
+      <button type="button" onClick={() => setNewUser(!newUser)}>
+        {newUser ? "Login" : "Create Account"}
+      </button>
     </div>
   );
+}
+
+export function getStaticProps(context: any) {
+  const host = context.req.headers.host;
+  const url = host.includes("localhost") ? "http://" : "https://";
+  const fullUrl = url + host;
+  return {
+    props: {
+      clientID: process.env.STRAVA_CLIENT_ID,
+      url: fullUrl
+    },
+  };
 }

@@ -5,29 +5,18 @@ import LoginData from "../scripts/logindata";
 
 export default function LoginPage({
   clientID,
+  users,
   url,
 }: {
   clientID: string;
+  users: any[];
   url: string;
 }) {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [users, setUsers] = useState([] as any);
   const [newUser, setNewUser] = useState(false);
-
-  useEffect(() => {
-    // get list of users from server
-    axios
-      .get(`${url}/api/users`)
-      .then((response) => {
-        setUsers(response.data.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
 
   function handleClick() {
     // check if username and password are valid
@@ -128,9 +117,20 @@ export function getServerSideProps(context: any) {
   const host = context.req.headers.host;
   const url = host.includes("localhost") ? "http://" : "https://";
   const fullUrl = url + host;
+  let users = [] as any[];
+  axios
+    .get(`${url}/api/users`)
+    .then((response) => {
+      users = response.data.data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
   return {
     props: {
       clientID: process.env.STRAVA_CLIENT_ID,
+      users: users,
       url: fullUrl,
     },
   };

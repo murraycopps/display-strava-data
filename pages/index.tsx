@@ -42,6 +42,7 @@ export default function HomePage() {
         });
         setData(response.data);
         localStorage.setItem("data", JSON.stringify(response.data));
+        console.table(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -66,7 +67,6 @@ export default function HomePage() {
         const { data } = response;
 
         setActivities(data);
-        console.table(data[0]);
         localStorage.setItem("activities", JSON.stringify(data));
       } catch (error) {
         console.error(error);
@@ -114,8 +114,11 @@ export default function HomePage() {
           Strava Data
         </h1>
         <div className="flex flex-col justify-evenly">
-          <p className="my-4">First name: {data.firstname}</p>
-          <p className="my-4">Last name: {data.lastname}</p>
+          <p>First name: {data.firstname}</p>
+          <p >Last name: {data.lastname}</p>
+          <p>Followers: {data.follower_count}</p>
+          <p>Friends: {data.friend_count}</p>
+
         </div>
         <img src={data.profile} className="w-32 h-32 rounded-full" />
       </div>

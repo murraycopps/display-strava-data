@@ -12,7 +12,6 @@ export default function LoginPage({
   users: any[];
   url: string;
 }) {
-    console.log("login page", users);
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -57,7 +56,7 @@ export default function LoginPage({
           .then((response) => {
             setErrorMessage("Account created");
             router.push(
-              `https://www.strava.com/oauth/authorize?client_id=${clientID}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all`
+              `https://www.strava.com/oauth/authorize?client_id=${clientID}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all,read,profile:read_all,read_all`
             );
           })
           .catch((error) => {
@@ -76,7 +75,7 @@ export default function LoginPage({
           Username:
         </label>
         <input
-          className="w-full py-2 px-3 rounded-md text-gray-900 bg-gray-800 focus:outline-none mb-2 focus:shadow-outline-blue"
+          className="w-full py-2 px-3 rounded-md text-white bg-gray-800 focus:outline-none mb-2 focus:shadow-outline-blue"
           type="text"
           name="username"
           value={username}
@@ -86,7 +85,7 @@ export default function LoginPage({
           Password:
         </label>
         <input
-          className="w-full mb-2 py-2 px-3 rounded-md text-gray-900 bg-gray-800 focus:outline-none focus:shadow-outline-blue"
+          className="w-full mb-2 py-2 px-3 rounded-md text-white bg-gray-800 focus:outline-none focus:shadow-outline-blue"
           type="password"
           name="password"
           value={password}

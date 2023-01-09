@@ -87,7 +87,7 @@ export default function HomePage() {
     );
   }
 
-  if (!false) {
+  if (!data) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="flex items-center justify-center">

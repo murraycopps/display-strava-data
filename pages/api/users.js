@@ -9,8 +9,6 @@ export default async function handler(req, res) {
 
   const bodyObject = typeof req.body === "string" && req.body ? JSON.parse(req.body) : req.body;
 
-  console.log("request", req.method);
-
   switch (req.method) {
     case "POST":
       const results = await db.collection("users").insertOne(bodyObject);

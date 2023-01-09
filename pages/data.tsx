@@ -69,7 +69,11 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
     fetchData();
   }, []);
 
-  return <div>Authenticating...</div>;
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <div className="text-2xl font-bold text-white">Authenticating...</div>
+    </div>
+  )
 }
 
 export default AuthCallbackPage;

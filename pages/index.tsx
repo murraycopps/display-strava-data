@@ -22,7 +22,12 @@ export default function HomePage() {
     const cachedActivities = localStorage.getItem("activities");
     const expirationTime = localStorage.getItem("expirationTime");
 
-    if (cachedData && cachedActivities && expirationTime && Date.now() < +expirationTime) {
+    if (
+      cachedData &&
+      cachedActivities &&
+      expirationTime &&
+      Date.now() < +expirationTime
+    ) {
       setData(JSON.parse(cachedData));
       setActivities(JSON.parse(cachedActivities));
       return;
@@ -72,15 +77,34 @@ export default function HomePage() {
     fetchData();
     const newExpirationTime = Date.now() + 240 * 1000; // 15 minutes from now
     localStorage.setItem("expirationTime", newExpirationTime.toString());
-
   }, []);
 
   if (!LoginData.isLoggedIn()) {
-    return <div>Redirecting...</div>;
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-2xl font-bold text-white">Redirecting...</div>
+      </div>
+    );
   }
 
-  if (!data) {
-    return <div>Loading...</div>;
+  if (!false) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center">
+          <div className="flex flex-col items-center justify-center h-full w-full">
+            <div className="lds-ring">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+            <p className="text-xl font-bold mt-4 text-center text-white">
+              Loading...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

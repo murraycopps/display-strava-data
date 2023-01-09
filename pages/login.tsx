@@ -74,35 +74,36 @@ export default function LoginPage({clientID, url}: { clientID: string, url: stri
   }
 
   return (
-    <div>
-      <form>
-        <label htmlFor="username">Username:</label>
-        <input
-          type="text"
-          name="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <br />
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          name="password"
-          value={password}
-          autoComplete="on"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
-        {errorMessage && <p>{errorMessage}</p>}
-        <button type="button" onClick={handleClick}>
-          {newUser ? "Create Account" : "Login"}
-        </button>
-      </form>
+    <div className="flex flex-col items-center justify-center bg-gray-800 text-white h-screen">
+  <form className="w-1/3 py-6 px-4 bg-gray-700 rounded-lg shadow-lg">
+    <label className="block font-bold text-lg mb-2" htmlFor="username">Username:</label>
+    <input
+      className="w-full py-2 px-3 rounded-md text-gray-900 bg-gray-800 focus:outline-none mb-2 focus:shadow-outline-blue"
+      type="text"
+      name="username"
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+    />
+    <label className="block font-bold text-lg mb-2" htmlFor="password">Password:</label>
+    <input
+      className="w-full mb-2 py-2 px-3 rounded-md text-gray-900 bg-gray-800 focus:outline-none focus:shadow-outline-blue"
+      type="password"
+      name="password"
+      value={password}
+      autoComplete="on"
+      onChange={(e) => setPassword(e.target.value)}
+    />
+    {errorMessage && <p className="text-red-500 mb-2">{errorMessage}</p>}
+    <button className="w-full py-2 px-4 rounded-md bg-blue-500 text-white font-bold focus:outline-none focus:shadow-outline" type="button" onClick={handleClick}>
+      {newUser ? "Create Account" : "Login"}
+    </button>
+  </form>
 
-      <button type="button" onClick={() => setNewUser(!newUser)}>
-        {newUser ? "Login" : "Create Account"}
-      </button>
-    </div>
+  <button className="mt-4 w-1/3 py-2 px-4 rounded-md bg-gray-600 text-white font-bold focus:outline-none focus:shadow-outline" type="button" onClick={() => setNewUser(!newUser)}>
+    {newUser ? "Login" : "Create Account"}
+  </button>
+</div>
+
   );
 }
 

@@ -9,6 +9,8 @@ export default async function handler(req, res) {
 
   const bodyObject = typeof req.body === "string" && req.body ? JSON.parse(req.body) : req.body;
 
+  console.log("request", req.method);
+
   switch (req.method) {
     case "POST":
       const results = await db.collection("users").insertOne(bodyObject);
@@ -27,5 +29,7 @@ export default async function handler(req, res) {
       await db.collection("users").updateOne({ "_id": new ObjectId(_id) }, { $set: { ...rest } });
       res.json({ status: 200, data: "updated" });
       break;
+      default:
+        res.status(405).json({ status: 405, data: "Method not allowed" });
   }
 }

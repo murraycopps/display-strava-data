@@ -15,6 +15,10 @@ export default class LoginData {
         return this.accessToken
     }
 
+    static setAccessToken(token){
+        this.accessToken = token
+    }
+
     
 
     

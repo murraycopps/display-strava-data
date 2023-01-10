@@ -5,7 +5,16 @@ import LoginData from "../scripts/logindata";
 
 const API_URL = "https://www.strava.com/api/v3";
 
-export default function HomePage() {
+export async function getStaticProps() {
+  return {
+    props: {
+      clientId: process.env.STRAVA_CLIENT_ID || "",
+      clientSecret: process.env.STRAVA_CLIENT_SECRET || "",
+    },
+  };
+}
+
+export default function HomePage({clientId, clientSecret}: {clientId: string, clientSecret: string}) {
   const router = useRouter();
 
   const [data, setData] = useState(null as any);
@@ -43,8 +52,18 @@ export default function HomePage() {
         setData(response.data);
         localStorage.setItem("data", JSON.stringify(response.data));
         console.table(response.data);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        if (error.response.status === 401) {
+          const refreshResponse = await axios.post(`${API_URL}/oauth/token`, {
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: "refresh_token",
+            refresh_token: data.refresh_token,
+          });
+          const { access_token } = refreshResponse.data;
+          LoginData.setAccessToken(access_token);
+          fetchData();
+        }
       }
     }
 
@@ -68,8 +87,18 @@ export default function HomePage() {
 
         setActivities(data);
         localStorage.setItem("activities", JSON.stringify(data));
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        if (error.response.status === 401) {
+          const refreshResponse = await axios.post(`${API_URL}/oauth/token`, {
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: "refresh_token",
+            refresh_token: data.refresh_token,
+          });
+          const { access_token } = refreshResponse.data;
+          LoginData.setAccessToken(access_token);
+          getLoggedInAthleteActivities(page, perPage);
+        }
       }
     }
 
@@ -115,10 +144,9 @@ export default function HomePage() {
         </h1>
         <div className="flex flex-col justify-evenly">
           <p>First name: {data.firstname}</p>
-          <p >Last name: {data.lastname}</p>
+          <p>Last name: {data.lastname}</p>
           <p>Followers: {data.follower_count}</p>
           <p>Friends: {data.friend_count}</p>
-
         </div>
         <img src={data.profile} className="w-32 h-32 rounded-full" />
       </div>

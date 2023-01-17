@@ -104,7 +104,7 @@ export default function LoginPage({
 
   return (
     <div className="flex flex-col items-center justify-center bg-gray-800 text-white h-screen">
-      <form className="w-1/3 py-6 px-4 bg-gray-700 rounded-lg shadow-lg">
+      <form className="run-field-sizing py-6 px-4 bg-gray-700 rounded-lg shadow-lg">
         <label className="block font-bold text-lg mb-2" htmlFor="username">
           Username:
         </label>
@@ -137,7 +137,7 @@ export default function LoginPage({
       </form>
 
       <button
-        className="mt-4 w-1/3 py-2 px-4 rounded-md bg-gray-600 text-white font-bold focus:outline-none focus:shadow-outline"
+        className="mt-4 run-field-sizing py-2 px-4 rounded-md bg-gray-600 text-white font-bold focus:outline-none focus:shadow-outline"
         type="button"
         onClick={() => setNewUser(!newUser)}
       >

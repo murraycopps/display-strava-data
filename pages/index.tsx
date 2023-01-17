@@ -128,7 +128,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
     );
   }
 
-  if (!data) {
+  if (!data || !stats || !activities) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="flex items-center justify-center">

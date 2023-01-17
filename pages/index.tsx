@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LoginData from "../scripts/logindata";
 
-const API_URL = "https://www.strava.com/api/v3";
-
 export async function getStaticProps() {
   return {
     props: {
@@ -14,11 +12,18 @@ export async function getStaticProps() {
   };
 }
 
-export default function HomePage({clientId, clientSecret}: {clientId: string, clientSecret: string}) {
+type Props = {
+  clientId: string;
+  clientSecret: string;
+};
+
+export default function HomePage({ clientId, clientSecret }: Props) {
   const router = useRouter();
 
   const [data, setData] = useState(null as any);
   const [activities, setActivities] = useState([] as any);
+  const [stats, setStats] = useState(null as any);
+  const [showYear, setShowYear] = useState(false);
 
   const accessToken = LoginData.getAccessToken();
 
@@ -29,41 +34,37 @@ export default function HomePage({clientId, clientSecret}: {clientId: string, cl
     }
     const cachedData = localStorage.getItem("data");
     const cachedActivities = localStorage.getItem("activities");
+    const cachedStats = localStorage.getItem("stats");
     const expirationTime = localStorage.getItem("expirationTime");
 
     if (
       cachedData &&
       cachedActivities &&
+      cachedStats &&
       expirationTime &&
       Date.now() < +expirationTime
     ) {
       setData(JSON.parse(cachedData));
+      setStats(JSON.parse(cachedStats));
       setActivities(JSON.parse(cachedActivities));
       return;
     }
 
     async function fetchData() {
       try {
-        const response = await axios.get(`${API_URL}/athlete`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `https://www.strava.com/api/v3/athlete`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setData(response.data);
         localStorage.setItem("data", JSON.stringify(response.data));
-        console.table(response.data);
+        getStats(response.data.id);
       } catch (error: any) {
-        if (error.response.status === 401) {
-          const refreshResponse = await axios.post(`${API_URL}/oauth/token`, {
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: "refresh_token",
-            refresh_token: data.refresh_token,
-          });
-          const { access_token } = refreshResponse.data;
-          LoginData.setAccessToken(access_token);
-          fetchData();
-        }
+        console.log(error);
       }
     }
 
@@ -79,26 +80,37 @@ export default function HomePage({clientId, clientSecret}: {clientId: string, cl
       };
 
       try {
-        const response = await axios.get(`${API_URL}/athlete/activities`, {
-          headers,
-          params,
-        });
+        const response = await axios.get(
+          `https://www.strava.com/api/v3/athlete/activities`,
+          {
+            headers,
+            params,
+          }
+        );
         const { data } = response;
 
         setActivities(data);
         localStorage.setItem("activities", JSON.stringify(data));
       } catch (error: any) {
-        if (error.response.status === 401) {
-          const refreshResponse = await axios.post(`${API_URL}/oauth/token`, {
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: "refresh_token",
-            refresh_token: data.refresh_token,
-          });
-          const { access_token } = refreshResponse.data;
-          LoginData.setAccessToken(access_token);
-          getLoggedInAthleteActivities(page, perPage);
-        }
+        console.log(error);
+      }
+    }
+
+    async function getStats(id: string) {
+      try {
+        const response = await axios.get(
+          `https://www.strava.com/api/v3/athletes/${id}/stats`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setStats(response.data);
+        localStorage.setItem("stats", JSON.stringify(response.data));
+        console.log(response.data);
+      } catch (error: any) {
+        console.log(error);
       }
     }
 
@@ -138,7 +150,7 @@ export default function HomePage({clientId, clientSecret}: {clientId: string, cl
 
   return (
     <div className="font-sans flex flex-col items-center bg-gray-800 text-white">
-      <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-8">
+      <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-8 rounded-md">
         <h1 className="text-3xl font-bold text-center w-full mb-8">
           Strava Data
         </h1>
@@ -149,6 +161,66 @@ export default function HomePage({clientId, clientSecret}: {clientId: string, cl
           <p>Friends: {data.friend_count}</p>
         </div>
         <img src={data.profile} className="w-32 h-32 rounded-full" />
+      </div>
+      <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-4 rounded-md">
+        <h2 className="text-3xl font-bold text-center w-full mb-8">
+          {showYear ? "Yearly" : "Lifetime"} Stats
+        </h2>
+        <div className="flex flex-col justify-evenly">
+          {showYear ? (
+            <>
+              <p>
+                Distance:{" "}
+                {Math.round((stats.ytd_run_totals.distance / 1609.34) * 100) /
+                  100}{" "}
+                Miles
+              </p>
+              <p>
+                Time:{" "}
+                {Math.round((stats.ytd_run_totals.moving_time / 3600) * 100) /
+                  100}{" "}
+                Hours
+              </p>
+              <p>Runs: {stats.ytd_run_totals.count}</p>
+              <p>
+                Average Pace:{" "}
+                {outTime(
+                  stats.ytd_run_totals.moving_time /
+                    (stats.ytd_run_totals.distance / 1609.34)
+                )}
+              </p>
+            </>
+          ) : (
+            <>
+              <p>
+                Distance:{" "}
+                {Math.round((stats.all_run_totals.distance / 1609.34) * 100) /
+                  100}{" "}
+                Miles
+              </p>
+              <p>
+                Time:{" "}
+                {Math.round((stats.all_run_totals.elapsed_time / 3600) * 100) /
+                  100}{" "}
+                Hours
+              </p>
+              <p>Runs: {stats.all_run_totals.count}</p>
+              <p>
+                Average Pace:{" "}
+                {outTime(
+                  stats.all_run_totals.moving_time /
+                    (stats.all_run_totals.distance / 1609.34)
+                )}
+              </p>
+            </>
+          )}
+        </div>
+        <button
+          className="bg-gray-600 mt-4 p-2 rounded-md w-full"
+          onClick={() => setShowYear(!showYear)}
+        >
+          Toggle
+        </button>
       </div>
       <ul className="list-none">
         {activities.map((activity: any) => (

@@ -2,9 +2,9 @@ export default class LoginData {
     static loggedIn = false
     static accessToken = ''
 
-    static Login( token ){
+    static Login( accessToken ){
         this.loggedIn = true
-        this.accessToken = token
+        this.accessToken = accessToken
     }
 
     static isLoggedIn(){
@@ -17,9 +17,5 @@ export default class LoginData {
 
     static setAccessToken(token){
         this.accessToken = token
-    }
-
-    
-
-    
+    }  
 }

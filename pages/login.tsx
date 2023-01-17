@@ -1,14 +1,16 @@
 import { useRouter } from "next/router";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import LoginData from "../scripts/logindata";
 
 export default function LoginPage({
-  clientID,
+  clientId,
+  clientSecret,
   users,
   url,
 }: {
-  clientID: string;
+  clientId: string;
+  clientSecret: string;
   users: any[];
   url: string;
 }) {
@@ -18,7 +20,7 @@ export default function LoginPage({
   const [errorMessage, setErrorMessage] = useState("");
   const [newUser, setNewUser] = useState(false);
 
-  function handleClick() {
+  async function handleClick() {
     // check if username and password are valid
     const user = users.find(
       (user: { username: string; password: string }) =>
@@ -29,13 +31,45 @@ export default function LoginPage({
     const userExists = users.find(
       (user: { username: string }) => user.username === username
     );
+
     if (newUser && userExists) {
       setErrorMessage("Username already exists");
       return;
     }
 
     if (user) {
+      // check if user.expiresAt is in the past
+      console.log(new Date(user.expiresAt * 1000).toLocaleString())
+      if (new Date(user.expiresAt * 1000) < new Date()) {
+        // refresh token
+        const response = await axios.post(
+          `https://www.strava.com/api/v3/oauth/token`,
+          {
+            client_id: clientId,
+            client_secret: clientSecret,
+            grant_type: "refresh_token",
+            refresh_token: user.refreshToken,
+          }
+        );
+        const { access_token, refresh_token, expires_at } = response.data;
+        console.log(response.data);
+        console.log(new Date(response.data.expires_at * 1000).toLocaleString());
+
+
+        axios.put(`${url}/api/users`, {
+          _id: user._id,
+          accessToken: access_token,
+          refreshToken: refresh_token,
+          expiresAt: expires_at,
+        });
+
+        LoginData.Login(access_token);
+
+        router.push("/");
+        return
+      }
       LoginData.Login(user.accessToken);
+
       router.push("/");
     } else {
       if (newUser) {
@@ -56,7 +90,7 @@ export default function LoginPage({
           .then((response) => {
             setErrorMessage("Account created");
             router.push(
-              `https://www.strava.com/oauth/authorize?client_id=${clientID}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all,read,profile:read_all,read_all`
+              `https://www.strava.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all,read,profile:read_all,read_all`
             );
           })
           .catch((error) => {
@@ -129,7 +163,8 @@ export async function getServerSideProps(context: any) {
 
   return {
     props: {
-      clientID: process.env.STRAVA_CLIENT_ID,
+      clientId: process.env.STRAVA_CLIENT_ID,
+      clientSecret: process.env.STRAVA_CLIENT_SECRET,
       users: users,
       url: fullUrl,
     },

@@ -25,6 +25,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
   const [activities, setActivities] = useState([] as any);
   const [stats, setStats] = useState(null as any);
   const [showYear, setShowYear] = useState(false);
+  const [showShoes, setShowShoes] = useState(false);
 
   const accessToken = LoginData.getAccessToken();
 
@@ -64,6 +65,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
         setData(response.data);
         localStorage.setItem("data", JSON.stringify(response.data));
         getStats(response.data.id);
+        console.log(response.data);
       } catch (error: any) {
         console.log(error);
       }
@@ -162,6 +164,19 @@ export default function HomePage({ clientId, clientSecret }: Props) {
           <p>Friends: {data.friend_count}</p>
         </div>
         <img src={data.profile} className="w-32 h-32 rounded-full" />
+        <button className="bg-gray-600 p-2 rounded-md w-full mt-4" onClick={() => setShowShoes(!showShoes)}>
+          {showShoes ? "Hide" : "Show"} Shoes
+        </button>
+        {showShoes && (
+          <ul className="flex flex-col justify-evenly mt-2">
+            {data.shoes.map((shoe: any) => (
+              <li key={shoe.id} className="mt-2">
+                <p>Name: {shoe.name}</p>
+                <p>Distance: {shoe.converted_distance} miles</p>
+              </li>
+            ))}
+            </ul>
+        )}
       </div>
       <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-4 rounded-md">
         <h2 className="text-3xl font-bold text-center w-full mb-8">

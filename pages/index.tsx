@@ -1,4 +1,5 @@
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import LoginData from "../scripts/logindata";
@@ -91,6 +92,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
 
         setActivities(data);
         localStorage.setItem("activities", JSON.stringify(data));
+        console.log(data);
       } catch (error: any) {
         console.log(error);
       }
@@ -108,7 +110,6 @@ export default function HomePage({ clientId, clientSecret }: Props) {
         );
         setStats(response.data);
         localStorage.setItem("stats", JSON.stringify(response.data));
-        console.log(response.data);
       } catch (error: any) {
         console.log(error);
       }
@@ -228,24 +229,26 @@ export default function HomePage({ clientId, clientSecret }: Props) {
             className="run-field-sizing my-4 bg-gray-700 p-4 rounded-md"
             key={activity.id}
           >
-            <h2 className="mb-2 text-center text-lg">{activity.name}</h2>
-            <p className="mb-2 text-center">
-              Distance: {Math.round((activity.distance / 1609.34) * 100) / 100}{" "}
-              Miles
-            </p>
-            <p className="mb-2 text-center">
-              Time: {outTime(activity.moving_time)}
-            </p>
-            <p className="mb-2 text-center">
-              Pace:{" "}
-              {outTime(activity.moving_time / (activity.distance / 1609.34))}
-            </p>
-            <p className="mb-2 text-center">
-              Date:{" "}
-              {new Date(activity.start_date_local).toLocaleDateString() +
-                " " +
-                new Date(activity.start_date_local).toLocaleTimeString()}
-            </p>
+            <Link href={`/activity/${activity.id}`} className="w-full h-full">
+              <h2 className="mb-2 text-center text-lg">{activity.name}</h2>
+              <p className="mb-2 text-center">
+                Distance:{" "}
+                {Math.round((activity.distance / 1609.34) * 100) / 100} Miles
+              </p>
+              <p className="mb-2 text-center">
+                Time: {outTime(activity.moving_time)}
+              </p>
+              <p className="mb-2 text-center">
+                Pace:{" "}
+                {outTime(activity.moving_time / (activity.distance / 1609.34))}
+              </p>
+              <p className="mb-2 text-center">
+                Date:{" "}
+                {new Date(activity.start_date_local).toLocaleDateString() +
+                  " " +
+                  new Date(activity.start_date_local).toLocaleTimeString()}
+              </p>
+            </Link>
           </li>
         ))}
       </ul>

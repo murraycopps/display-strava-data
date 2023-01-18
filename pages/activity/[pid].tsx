@@ -1,9 +1,17 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import LoginData from "../../scripts/logindata";
 
 export default function ActivityPage({ pid }: { pid: string }) {
   const [activity, setActivity] = useState(null as any);
+  const router = useRouter();
 
   useEffect(() => {
+    if (!LoginData.isLoggedIn()) {
+        router.push("/login");
+        return;
+      }
+
     setActivity(
       JSON.parse(localStorage.getItem("activities") || "[]").find(
         (activity: any) => activity.id == pid

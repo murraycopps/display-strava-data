@@ -25,9 +25,10 @@ export default async function handler(req, res) {
     case "PUT":
       const { _id, ...rest } = bodyObject;
       await db.collection("users").updateOne({ "_id": new ObjectId(_id) }, { $set: { ...rest } });
-      res.json({ status: 200, data: "updated" });
+      const updated = await db.collection("users").find({ "_id": new ObjectId(_id) }).toArray()
+      res.json({ status: 200, data: updated});
       break;
-      default:
-        res.status(405).json({ status: 405, data: "Method not allowed" });
+    default:
+      res.status(405).json({ status: 405, data: "Method not allowed" });
   }
 }

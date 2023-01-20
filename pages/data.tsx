@@ -55,14 +55,14 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
         console.log(response.data)
         console.log(new Date(response.data.expires_at * 1000).toLocaleString())
 
-        axios.put(`${url}/api/users`, {
+        const updated = await axios.put(`${url}/api/users`, {
           _id: _id,
           accessToken: access_token,
           refreshToken: refresh_token,
           expiresAt: expires_at,
         });
 
-        LoginData.Login(access_token);
+        LoginData.Login(access_token, updated.data.data[0].username);
 
         router.push("/");
       } catch (error) {

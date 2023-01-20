@@ -63,12 +63,12 @@ export default function LoginPage({
           expiresAt: expires_at,
         });
 
-        LoginData.Login(access_token);
+        LoginData.Login(access_token, username);
 
         router.push("/");
         return
       }
-      LoginData.Login(user.accessToken);
+      LoginData.Login(user.accessToken, username);
 
       router.push("/");
     } else {

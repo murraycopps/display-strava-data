@@ -1,3 +1,10 @@
+import {
+  faClock,
+  faRuler,
+  faRunning,
+  faTachometerAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +33,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
   const [stats, setStats] = useState(null as any);
   const [showYear, setShowYear] = useState(false);
   const [showShoes, setShowShoes] = useState(false);
+  const [usedStats, setUsedStats] = useState([] as any);
 
   const accessToken = LoginData.getAccessToken();
 
@@ -38,12 +46,14 @@ export default function HomePage({ clientId, clientSecret }: Props) {
     const cachedActivities = localStorage.getItem("activities");
     const cachedStats = localStorage.getItem("stats");
     const expirationTime = localStorage.getItem("expirationTime");
+    const cachedUsername = localStorage.getItem("username");
 
     if (
       cachedData &&
       cachedActivities &&
       cachedStats &&
       expirationTime &&
+      cachedUsername === LoginData.getUsername() &&
       Date.now() < +expirationTime
     ) {
       setData(JSON.parse(cachedData));
@@ -121,7 +131,14 @@ export default function HomePage({ clientId, clientSecret }: Props) {
     fetchData();
     const newExpirationTime = Date.now() + 240 * 1000; // 15 minutes from now
     localStorage.setItem("expirationTime", newExpirationTime.toString());
+    localStorage.setItem("username", LoginData.getUsername());
+    console.log(LoginData.getUsername());
   }, []);
+
+  useEffect(() => {
+    if (!stats) return;
+    setUsedStats(showYear ? stats.ytd_run_totals : stats.all_run_totals);
+  }, [stats, showYear]);
 
   if (!LoginData.isLoggedIn()) {
     return (
@@ -152,129 +169,159 @@ export default function HomePage({ clientId, clientSecret }: Props) {
   }
 
   return (
-    <div className="font-sans flex flex-col items-center bg-gray-800 text-white">
-      <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-8 rounded-md">
-        <h1 className="text-3xl font-bold text-center w-full mb-8">
-          Strava Data
-        </h1>
-        <div className="flex flex-col justify-evenly">
-          <p>First name: {data.firstname}</p>
-          <p>Last name: {data.lastname}</p>
-          <p>Followers: {data.follower_count}</p>
-          <p>Friends: {data.friend_count}</p>
+    <div className="font-sans flex lg:flex-row flex-col lg:items-start items-center bg-gray-800 text-white gap-4">
+      <div className="profile-sizing flex flex-col pt-8 lg:h-screen h-auto overflow-x-hidden">
+        <div className="bg-gray-700 p-8 mb-4 gap-4 rounded-md flex flex-row flex-wrap lg:ml-4">
+          <div className="flex-grow sm:h-36 h-28 flex flex-col justify-between sm:pb-4">
+            <h1 className="sm:text-4xl text-2xl font-bold text-center w-full sm:mb-4">
+              {data.firstname} {data.lastname}
+            </h1>
+            <div className="flex flex-row text-center justify-center gap-4 sm:gap-8">
+              <div>
+                Followers:
+                <p className="text-2xl font-bold">{data.follower_count}</p>
+              </div>
+              <div>
+                Friends:
+                <p className="text-2xl font-bold">{data.friend_count}</p>
+              </div>
+            </div>
+          </div>
+          <img
+            src={data.profile}
+            className="sm:w-36 sm:h-36 w-28 h-28 rounded-full"
+          />
+          <h2 className="text-xl font-bold text-center w-full">
+            {showYear ? "Yearly" : "Lifetime"} Stats
+          </h2>
+          <div className="grid sm:grid-cols-4 grid-cols-2 w-full gap-8">
+            <div className="flex items-center justify-start gap-2 flex-col">
+              <FontAwesomeIcon icon={faRuler} className="w-12 h-12" />{" "}
+              <p className="text-lg">
+                {Math.round(usedStats.distance / 1609.34)} Mi
+              </p>
+            </div>
+            <div className="flex items-center justify-start gap-2 flex-col">
+              <FontAwesomeIcon icon={faClock} className="w-12 h-12" />{" "}
+              <p className="text-lg">
+                {Math.round((usedStats.moving_time / 3600) * 10) / 10} Hrs
+              </p>
+            </div>
+            <div className="flex items-center justify-start gap-2 flex-col">
+              <FontAwesomeIcon icon={faTachometerAlt} className="w-12 h-12" />{" "}
+              <p className="text-lg">{usedStats.count} Runs</p>
+            </div>
+            <div className="flex items-center justify-start gap-2 flex-col">
+              <FontAwesomeIcon icon={faRunning} className="w-12 h-12" />{" "}
+              <p className="text-lg text-center">
+                {outTime(
+                  usedStats.moving_time / (usedStats.distance / 1609.34),
+                  0
+                )}
+              </p>
+            </div>
+          </div>
+          <button
+            className="bg-gray-600 hover:bg-gray-500 mt-4 p-2 rounded-md w-full"
+            onClick={() => setShowYear(!showYear)}
+          >
+            Toggle
+          </button>
         </div>
-        <img src={data.profile} className="w-32 h-32 rounded-full" />
-        <button className="bg-gray-600 p-2 rounded-md w-full mt-4" onClick={() => setShowShoes(!showShoes)}>
-          {showShoes ? "Hide" : "Show"} Shoes
-        </button>
-        {showShoes && (
-          <ul className="flex flex-col justify-evenly mt-2">
-            {data.shoes.map((shoe: any) => (
-              <li key={shoe.id} className="mt-2">
-                <p>Name: {shoe.name}</p>
-                <p>Distance: {shoe.converted_distance} miles</p>
-              </li>
-            ))}
+        <div className="bg-gray-700 p-8 gap-4 rounded-md flex flex-row flex-wrap lg:ml-4">
+          <button
+            className="bg-gray-600 p-2 hover:bg-gray-500 rounded-md w-full"
+            onClick={() => setShowShoes(!showShoes)}
+          >
+            {showShoes ? "Hide" : "Show"} Shoes
+          </button>
+          {showShoes && (
+            <ul className="flex flex-col justify-evenly w-full">
+              {data.shoes.map((shoe: any) => (
+                <li
+                  key={shoe.id}
+                  className="mt-4 flex flex-row justify-between text-lg"
+                >
+                  <h2>{shoe.name}</h2>
+
+                  <p>
+                    {" "}
+                    <FontAwesomeIcon icon={faRunning} className="ml-2" />{" "}
+                    {shoe.converted_distance} Mi
+                  </p>
+                </li>
+              ))}
             </ul>
-        )}
-      </div>
-      <div className="bg-gray-700 run-field-sizing p-8 flex flex-row justify-between flex-wrap mt-4 rounded-md">
-        <h2 className="text-3xl font-bold text-center w-full mb-8">
-          {showYear ? "Yearly" : "Lifetime"} Stats
-        </h2>
-        <div className="flex flex-col justify-evenly">
-          {showYear ? (
-            <>
-              <p>
-                Distance:{" "}
-                {Math.round((stats.ytd_run_totals.distance / 1609.34) * 100) /
-                  100}{" "}
-                Miles
-              </p>
-              <p>
-                Time:{" "}
-                {Math.round((stats.ytd_run_totals.moving_time / 3600) * 100) /
-                  100}{" "}
-                Hours
-              </p>
-              <p>Runs: {stats.ytd_run_totals.count}</p>
-              <p>
-                Average Pace:{" "}
-                {outTime(
-                  stats.ytd_run_totals.moving_time /
-                    (stats.ytd_run_totals.distance / 1609.34)
-                )}
-              </p>
-            </>
-          ) : (
-            <>
-              <p>
-                Distance:{" "}
-                {Math.round((stats.all_run_totals.distance / 1609.34) * 100) /
-                  100}{" "}
-                Miles
-              </p>
-              <p>
-                Time:{" "}
-                {Math.round((stats.all_run_totals.elapsed_time / 3600) * 100) /
-                  100}{" "}
-                Hours
-              </p>
-              <p>Runs: {stats.all_run_totals.count}</p>
-              <p>
-                Average Pace:{" "}
-                {outTime(
-                  stats.all_run_totals.moving_time /
-                    (stats.all_run_totals.distance / 1609.34)
-                )}
-              </p>
-            </>
           )}
         </div>
-        <button
-          className="bg-gray-600 mt-4 p-2 rounded-md w-full"
-          onClick={() => setShowYear(!showYear)}
-        >
-          Toggle
-        </button>
+        <div className="lg:grow"></div>
+        <p className="bg-gray-700 p-4 text-lg mt-4 text-center rounded-t-lg ml-4 hidden lg:block">Icons by FontAwesome</p>
       </div>
-      <ul className="list-none">
-        {activities.map((activity: any) => (
-          <li
-            className="run-field-sizing my-4 bg-gray-700 p-4 rounded-md"
-            key={activity.id}
-          >
-            <Link href={`/activity/${activity.id}`} className="w-full h-full">
-              <h2 className="mb-2 text-center text-lg">{activity.name}</h2>
-              <p className="mb-2 text-center">
-                Distance:{" "}
-                {Math.round((activity.distance / 1609.34) * 100) / 100} Miles
-              </p>
-              <p className="mb-2 text-center">
-                Time: {outTime(activity.moving_time)}
-              </p>
-              <p className="mb-2 text-center">
-                Pace:{" "}
-                {outTime(activity.moving_time / (activity.distance / 1609.34))}
-              </p>
-              <p className="mb-2 text-center">
-                Date:{" "}
-                {new Date(activity.start_date_local).toLocaleDateString() +
-                  " " +
-                  new Date(activity.start_date_local).toLocaleTimeString()}
-              </p>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <div className="flex-grow flex justify-center w-full lg:w-auto lg:h-screen relative py-8 overflow-x-hidden">
+        <ul className="list-none run-field-sizing sm:h-full">
+          {activities.map((activity: any) => (
+            <li className=" mb-4 bg-gray-700 p-4 rounded-md" key={activity.id}>
+              <Link
+                href={`/activity/${activity.id}`}
+                className="w-full h-full grid grid-cols-2"
+              >
+                <div className="grid grid-rows-2 items-center ">
+                  <h2 className="text-center sm:text-3xl text-xl truncate w-full two-lines">
+                    {activity.name}
+                  </h2>
+                  <p className=" text-center text-md">
+                    {new Date(activity.start_date_local).toLocaleDateString() +
+                      " " +
+                      new Date(activity.start_date_local).toLocaleTimeString(
+                        [],
+                        {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        }
+                      )}
+                  </p>
+                </div>
+                <div className="grid gap-4">
+                  <div className="grid grid-cols-2">
+                    <div className="flex items-center justify-start gap-2 flex-col">
+                      <FontAwesomeIcon icon={faRuler} className="w-12 h-12" />{" "}
+                      <p className="text-lg">
+                        {Math.round((activity.distance / 1609.34) * 100) / 100}{" "}
+                        Mi
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-start gap-2 flex-col">
+                      <FontAwesomeIcon icon={faClock} className="w-12 h-12" />{" "}
+                      <p className="text-lg">
+                        {outTime(activity.moving_time)} Mins
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex grow flex-col justify-center">
+                    <div className="flex items-center justify-start gap-2 flex-col">
+                      <FontAwesomeIcon icon={faRunning} className="w-12 h-12" />{" "}
+                      <p className="text-lg text-center">
+                        {outTime(
+                          activity.moving_time / (activity.distance / 1609.34),
+                          0
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
 
-function outTime(time: number): string {
+function outTime(time: number, precision: number = 1): string {
   const hours = Math.floor(time / 3600);
   const minutes = Math.floor((time % 3600) / 60);
-  const seconds = Math.floor((time % 60) * 10) / 10;
+  const seconds = Math.floor((time % 60) * 10 ** precision) / 10 ** precision;
   return `${hours > 0 ? `${hours}:` : ""}${
     minutes < 10 && hours > 0 ? "0" : ""
   }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;

@@ -18,7 +18,7 @@ export default function ActivityPage({ pid }: { pid: string }) {
 
   useEffect(() => {
     if (!LoginData.isLoggedIn()) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 

@@ -37,7 +37,7 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
   useEffect(() => {
     if (LoginData.isLoggedIn()) {
       console.log("already logged in");
-      router.push("/");
+      router.push("/activities");
       return;
     }
     async function fetchData() {
@@ -64,7 +64,7 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
 
         LoginData.Login(access_token, updated.data.data[0].username);
 
-        router.push("/");
+        router.push("/activities");
       } catch (error) {
         console.error(error);
       }

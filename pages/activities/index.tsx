@@ -133,7 +133,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
     localStorage.setItem("expirationTime", newExpirationTime.toString());
     localStorage.setItem("username", LoginData.getUsername());
     console.log(LoginData.getUsername());
-  }, []);
+  }, [accessToken, router]);
 
   useEffect(() => {
     if (!stats) return;
@@ -190,6 +190,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
           <img
             src={data.profile}
             className="sm:w-36 sm:h-36 w-28 h-28 rounded-full"
+            alt="Profile Picture"
           />
           <h2 className="text-xl font-bold text-center w-full">
             {showYear ? "Yearly" : "Lifetime"} Stats

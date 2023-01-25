@@ -71,7 +71,7 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
     }
 
     fetchData();
-  }, []);
+  }, [_id, clientID, clientSecret, query.code, router, url]);
 
   return (
     <div className="flex items-center justify-center h-screen">

@@ -27,7 +27,7 @@ export default function ActivityPage({ pid }: { pid: string }) {
         (activity: any) => activity.id == pid
       )
     );
-  }, []);
+  }, [pid, router]);
 
   useEffect(() => {
     console.log(activity);

@@ -28,11 +28,6 @@ export default function LoginPage({
         user.username === username && user.password === password
     );
 
-    // check if username is used and if it is a new user
-    const userExists = users.find(
-      (user: { username: string }) => user.username === username
-    );
-
     if (user) {
       if(!user.expiresAt) return
       // check if user.expiresAt is in the past

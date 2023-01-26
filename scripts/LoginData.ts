@@ -1,10 +1,12 @@
+import {Goal} from "./types";
+
 export default class LoginData {
     static loggedIn = false
     static accessToken = ''
     static username = ''
-    static goals = []
+    static goals: Goal[] = []
 
-    static Login(accessToken, username, goals) {
+    static Login(accessToken: string, username: string, goals: Goal[]){
         this.loggedIn = true
         this.accessToken = accessToken
         this.username = username
@@ -34,7 +36,7 @@ export default class LoginData {
         return this.accessToken
     }
 
-    static setAccessToken(token) {
+    static setAccessToken(token: string) {
         this.accessToken = token
         sessionStorage.setItem("accessToken", LoginData.accessToken);
     }
@@ -50,11 +52,9 @@ export default class LoginData {
     static getStorage() {
         if (this.loggedIn) return
 
-        this.accessToken = sessionStorage.getItem("accessToken");
-        this.username = sessionStorage.getItem("username");
-        this.goals = JSON.parse(sessionStorage.getItem("goals"));
-
-        console.log(!!this.accessToken, !!this.username, !!this.goals)
+        this.accessToken = sessionStorage.getItem("accessToken") || ''
+        this.username = sessionStorage.getItem("username") || ''
+        this.goals = JSON.parse(sessionStorage.getItem("goals") || '{}')
 
         if(this.accessToken && this.username && this.goals) {
             this.loggedIn = true

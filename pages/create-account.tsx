@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useState } from "react";
-import LoginData from "../scripts/logindata";
 import Link from "next/link";
-import { User } from "../types";
+import { User } from "../scripts/types";
 
 export default function LoginPage({
   clientId,

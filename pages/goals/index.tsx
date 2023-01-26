@@ -1,5 +1,5 @@
-import LoginData from "../../scripts/logindata";
-import { Goal } from "../../types";
+import LoginData from "../../scripts/LoginData";
+import { Goal } from "../../scripts/types";
 
 export default function Goals(){
     return (

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { outTime } from "../scripts";
-import LoginData from "../scripts/logindata";
+import LoginData from "../scripts/LoginData";
 
 export default function ProfileCard({
   data,

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { outTime } from "../../scripts";
-import LoginData from "../../scripts/logindata";
+import LoginData from "../../scripts/LoginData";
 
 export async function getStaticProps() {
   return {

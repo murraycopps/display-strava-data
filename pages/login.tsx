@@ -1,9 +1,9 @@
 import { useRouter } from "next/router";
 import axios from "axios";
 import { useState } from "react";
-import LoginData from "../scripts/logindata";
+import LoginData from "../scripts/LoginData";
 import Link from "next/link";
-import { User } from "../types";
+import { User } from "../scripts/types";
 
 export default function LoginPage({
   clientId,
@@ -54,12 +54,13 @@ export default function LoginPage({
           expiresAt: expires_at,
         });
 
-        LoginData.Login(access_token, username, user.goals);
+        LoginData.Login(access_token, username, user.goals || [])
 
         router.push("/");
-        return;
+        return
       }
-      LoginData.Login(user.accessToken, username, user.goals);
+      if(!user.accessToken) return
+      LoginData.Login(user.accessToken, username, user.goals || [])
 
       router.push("/");
     } else {

@@ -9,6 +9,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { outTime } from "../../scripts";
 import LoginData from "../../scripts/logindata";
 
 export async function getStaticProps() {
@@ -39,7 +40,7 @@ export default function HomePage({ clientId, clientSecret }: Props) {
 
   useEffect(() => {
     if (!LoginData.isLoggedIn()) {
-      router.push("/landing");
+      router.push("/");
       return;
     }
     const cachedData = localStorage.getItem("data");
@@ -152,14 +153,14 @@ export default function HomePage({ clientId, clientSecret }: Props) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="flex items-center justify-center">
-          <div className="flex flex-col items-center justify-center h-full w-full">
+          <div className="flex flex-col items-center justify-center w-full h-full">
             <div className="lds-ring">
               <div></div>
               <div></div>
               <div></div>
               <div></div>
             </div>
-            <p className="text-xl font-bold mt-4 text-center text-white">
+            <p className="mt-4 text-xl font-bold text-center text-white">
               Loading...
             </p>
           </div>
@@ -169,14 +170,14 @@ export default function HomePage({ clientId, clientSecret }: Props) {
   }
 
   return (
-    <div className="font-sans flex lg:flex-row flex-col lg:items-start items-center bg-gray-800 text-white gap-4">
-      <div className="profile-sizing flex flex-col pt-8 lg:h-screen h-auto overflow-x-hidden">
-        <div className="bg-gray-700 p-8 mb-4 gap-4 rounded-md flex flex-row flex-wrap lg:ml-4">
-          <div className="flex-grow sm:h-36 h-28 flex flex-col justify-between sm:pb-4">
-            <h1 className="sm:text-4xl text-2xl font-bold text-center w-full sm:mb-4">
+    <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800 lg:flex-row lg:items-start">
+      <div className="flex flex-col h-auto pt-8 overflow-x-hidden profile-sizing lg:h-screen">
+        <div className="flex flex-row flex-wrap gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
+          <div className="flex flex-col justify-between flex-grow sm:h-36 h-28 sm:pb-4">
+            <h1 className="w-full text-2xl font-bold text-center sm:text-4xl sm:mb-4">
               {data.firstname} {data.lastname}
             </h1>
-            <div className="flex flex-row text-center justify-center gap-4 sm:gap-8">
+            <div className="flex flex-row justify-center gap-4 text-center sm:gap-8">
               <div>
                 Followers:
                 <p className="text-2xl font-bold">{data.follower_count}</p>
@@ -189,30 +190,30 @@ export default function HomePage({ clientId, clientSecret }: Props) {
           </div>
           <img
             src={data.profile}
-            className="sm:w-36 sm:h-36 w-28 h-28 rounded-full"
+            className="rounded-full sm:w-36 sm:h-36 w-28 h-28"
             alt="Profile Picture"
           />
-          <h2 className="text-xl font-bold text-center w-full">
+          <h2 className="w-full text-xl font-bold text-center">
             {showYear ? "Yearly" : "Lifetime"} Stats
           </h2>
-          <div className="grid sm:grid-cols-4 grid-cols-2 w-full gap-8">
-            <div className="flex items-center justify-start gap-2 flex-col">
+          <div className="grid w-full grid-cols-2 gap-8 sm:grid-cols-4">
+            <div className="flex flex-col items-center justify-start gap-2">
               <FontAwesomeIcon icon={faRuler} className="w-12 h-12" />{" "}
               <p className="text-lg">
                 {Math.round(usedStats.distance / 1609.34)} Mi
               </p>
             </div>
-            <div className="flex items-center justify-start gap-2 flex-col">
+            <div className="flex flex-col items-center justify-start gap-2">
               <FontAwesomeIcon icon={faClock} className="w-12 h-12" />{" "}
               <p className="text-lg">
                 {Math.round((usedStats.moving_time / 3600) * 10) / 10} Hrs
               </p>
             </div>
-            <div className="flex items-center justify-start gap-2 flex-col">
+            <div className="flex flex-col items-center justify-start gap-2">
               <FontAwesomeIcon icon={faTachometerAlt} className="w-12 h-12" />{" "}
               <p className="text-lg">{usedStats.count} Runs</p>
             </div>
-            <div className="flex items-center justify-start gap-2 flex-col">
+            <div className="flex flex-col items-center justify-start gap-2">
               <FontAwesomeIcon icon={faRunning} className="w-12 h-12" />{" "}
               <p className="text-lg text-center">
                 {outTime(
@@ -223,25 +224,25 @@ export default function HomePage({ clientId, clientSecret }: Props) {
             </div>
           </div>
           <button
-            className="bg-gray-600 hover:bg-gray-500 mt-4 p-2 rounded-md w-full"
+            className="w-full p-2 mt-4 bg-gray-600 rounded-md hover:bg-gray-500"
             onClick={() => setShowYear(!showYear)}
           >
             Toggle
           </button>
         </div>
-        <div className="bg-gray-700 p-8 gap-4 rounded-md flex flex-row flex-wrap lg:ml-4">
+        <div className="flex flex-row flex-wrap gap-4 p-8 bg-gray-700 rounded-md lg:ml-4">
           <button
-            className="bg-gray-600 p-2 hover:bg-gray-500 rounded-md w-full"
+            className="w-full p-2 bg-gray-600 rounded-md hover:bg-gray-500"
             onClick={() => setShowShoes(!showShoes)}
           >
             {showShoes ? "Hide" : "Show"} Shoes
           </button>
           {showShoes && (
-            <ul className="flex flex-col justify-evenly w-full">
+            <ul className="flex flex-col w-full justify-evenly">
               {data.shoes.map((shoe: any) => (
                 <li
                   key={shoe.id}
-                  className="mt-4 flex flex-row justify-between text-lg"
+                  className="flex flex-row justify-between mt-4 text-lg"
                 >
                   <h2>{shoe.name}</h2>
 
@@ -256,21 +257,23 @@ export default function HomePage({ clientId, clientSecret }: Props) {
           )}
         </div>
         <div className="lg:grow"></div>
-        <p className="bg-gray-700 p-4 text-lg mt-4 text-center rounded-t-lg ml-4 hidden lg:block">Icons by FontAwesome</p>
+        <p className="hidden p-4 mt-4 ml-4 text-lg text-center bg-gray-700 rounded-t-lg lg:block">
+          Icons by FontAwesome
+        </p>
       </div>
-      <div className="flex-grow flex justify-center w-full lg:w-auto lg:h-screen relative py-8 overflow-x-hidden">
+      <main className="relative flex justify-center flex-grow w-full py-8 overflow-x-hidden lg:w-auto lg:h-screen">
         <ul className="list-none run-field-sizing sm:h-full">
           {activities.map((activity: any) => (
-            <li className=" mb-4 bg-gray-700 p-4 rounded-md" key={activity.id}>
+            <li className="p-4 mb-4 bg-gray-700 rounded-md " key={activity.id}>
               <Link
                 href={`/activities/${activity.id}`}
-                className="w-full h-full grid grid-cols-2"
+                className="grid w-full h-full grid-cols-2"
               >
-                <div className="grid grid-rows-2 items-center ">
-                  <h2 className="text-center sm:text-3xl text-xl truncate w-full two-lines">
+                <div className="grid items-center grid-rows-2 ">
+                  <h2 className="w-full text-xl text-center truncate sm:text-3xl two-lines">
                     {activity.name}
                   </h2>
-                  <p className=" text-center text-md">
+                  <p className="text-center text-md">
                     {new Date(activity.start_date_local).toLocaleDateString() +
                       " " +
                       new Date(activity.start_date_local).toLocaleTimeString(
@@ -284,22 +287,22 @@ export default function HomePage({ clientId, clientSecret }: Props) {
                 </div>
                 <div className="grid gap-4">
                   <div className="grid grid-cols-2">
-                    <div className="flex items-center justify-start gap-2 flex-col">
+                    <div className="flex flex-col items-center justify-start gap-2">
                       <FontAwesomeIcon icon={faRuler} className="w-12 h-12" />{" "}
                       <p className="text-lg">
                         {Math.round((activity.distance / 1609.34) * 100) / 100}{" "}
                         Mi
                       </p>
                     </div>
-                    <div className="flex items-center justify-start gap-2 flex-col">
+                    <div className="flex flex-col items-center justify-start gap-2">
                       <FontAwesomeIcon icon={faClock} className="w-12 h-12" />{" "}
                       <p className="text-lg">
                         {outTime(activity.moving_time)} Mins
                       </p>
                     </div>
                   </div>
-                  <div className="flex grow flex-col justify-center">
-                    <div className="flex items-center justify-start gap-2 flex-col">
+                  <div className="flex flex-col justify-center grow">
+                    <div className="flex flex-col items-center justify-start gap-2">
                       <FontAwesomeIcon icon={faRunning} className="w-12 h-12" />{" "}
                       <p className="text-lg text-center">
                         {outTime(
@@ -314,16 +317,35 @@ export default function HomePage({ clientId, clientSecret }: Props) {
             </li>
           ))}
         </ul>
+      </main>
+      <div className="p-8 mt-8 mr-4 bg-gray-700 right-row-sizing">
+        <h2 className="text-2xl text-center">Goals</h2>
+        <div className="flex flex-col gap-4">
+          {LoginData.getGoals().length ? (
+            LoginData.getGoals().map((goal: any) => (
+              <div
+                key={goal.id}
+                className="flex flex-row justify-between p-4 bg-gray-600 rounded-md"
+              >
+                <div className="flex flex-col justify-center">
+                  <h2 className="text-lg">{goal.name}</h2>
+                  <p className="text-sm">{goal.description}</p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center">No Goals</p>
+          )}
+          <Link href="/goals"
+            className="p-2 text-center bg-gray-600 rounded-md"
+          >
+            Manage Goals
+          </Link>
+          
+        </div>
       </div>
     </div>
   );
 }
 
-function outTime(time: number, precision: number = 1): string {
-  const hours = Math.floor(time / 3600);
-  const minutes = Math.floor((time % 3600) / 60);
-  const seconds = Math.floor((time % 60) * 10 ** precision) / 10 ** precision;
-  return `${hours > 0 ? `${hours}:` : ""}${
-    minutes < 10 && hours > 0 ? "0" : ""
-  }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-}
+

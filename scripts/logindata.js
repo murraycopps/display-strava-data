@@ -2,11 +2,13 @@ export default class LoginData {
     static loggedIn = false
     static accessToken = ''
     static username = ''
+    static goals = []
 
-    static Login( accessToken, username ){
+    static Login( accessToken, username, goals ){
         this.loggedIn = true
         this.accessToken = accessToken
         this.username = username
+        this.goals = goals
     }
 
     static isLoggedIn(){
@@ -23,5 +25,9 @@ export default class LoginData {
 
     static getUsername(){
         return this.username
+    }
+
+    static getGoals(){
+        return this.goals
     }
 }

@@ -29,7 +29,7 @@ export default function LoginPage({
     );
 
     if (user) {
-      if(!user.expiresAt) return
+      if (!user.expiresAt) return;
       // check if user.expiresAt is in the past
       console.log(new Date(user.expiresAt * 1000).toLocaleString());
       if (new Date(user.expiresAt * 1000) < new Date()) {
@@ -54,46 +54,46 @@ export default function LoginPage({
           expiresAt: expires_at,
         });
 
-        LoginData.Login(access_token, username);
+        LoginData.Login(access_token, username, user.goals);
 
-        router.push("/activities");
+        router.push("/");
         return;
       }
-      LoginData.Login(user.accessToken, username);
+      LoginData.Login(user.accessToken, username, user.goals);
 
-      router.push("/activities");
+      router.push("/");
     } else {
       setErrorMessage("Incorrect username or password");
     }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-800 text-white h-screen">
-      <form className="run-field-sizing py-6 px-4 bg-gray-700 rounded-lg shadow-lg">
-        <label className="block font-bold text-lg mb-4" htmlFor="username">
+    <div className="flex flex-col items-center justify-center h-screen text-white bg-gray-800">
+      <form className="px-4 py-6 bg-gray-700 rounded-lg shadow-lg run-field-sizing">
+        <label className="block mb-4 text-lg font-bold" htmlFor="username">
           Username:
         </label>
         <input
-          className="w-full py-2 px-3 rounded-md text-white bg-gray-800 focus:outline-none mb-4 focus:shadow-outline-blue"
+          className="w-full px-3 py-2 mb-4 text-white bg-gray-800 rounded-md focus:outline-none focus:shadow-outline-blue"
           type="text"
           name="username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        <label className="block font-bold text-lg mb-4" htmlFor="password">
+        <label className="block mb-4 text-lg font-bold" htmlFor="password">
           Password:
         </label>
         <input
-          className="w-full mb-4 py-2 px-3 rounded-md text-white bg-gray-800 focus:outline-none focus:shadow-outline-blue"
+          className="w-full px-3 py-2 mb-4 text-white bg-gray-800 rounded-md focus:outline-none focus:shadow-outline-blue"
           type="password"
           name="password"
           value={password}
           autoComplete="on"
           onChange={(e) => setPassword(e.target.value)}
         />
-    <p className="text-red-500 mb-4">{errorMessage}</p>
+        <p className="mb-4 text-red-500">{errorMessage}</p>
         <button
-          className="w-full py-2 px-4 rounded-md bg-blue-500 hover:bg-blue-600 text-white font-bold focus:outline-none focus:shadow-outline"
+          className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:shadow-outline"
           type="button"
           onClick={handleClick}
         >
@@ -102,7 +102,7 @@ export default function LoginPage({
       </form>
 
       <Link
-        className="mt-4 run-field-sizing py-2 px-4 rounded-md text-center bg-gray-700 hover:bg-gray-600 text-white font-bold focus:outline-none focus:shadow-outline"
+        className="px-4 py-2 mt-4 font-bold text-center text-white bg-gray-700 rounded-md run-field-sizing hover:bg-gray-600 focus:outline-none focus:shadow-outline"
         type="button"
         href="/create-account"
       >

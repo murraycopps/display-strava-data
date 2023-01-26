@@ -5,6 +5,16 @@ type User = {
     accessToken?: string;
     expiresAt?: number;
     refreshToken?: string;
+    goals?: Goal[];
 };
 
-export type { User };
+type Goal = {
+    _id: number;
+    name: string;
+    description: string;
+    completed: boolean;
+    createdAt: number;
+    updatedAt: number;
+};
+
+export type { User, Goal };

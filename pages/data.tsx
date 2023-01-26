@@ -62,7 +62,7 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
           expiresAt: expires_at,
         });
 
-        LoginData.Login(access_token, updated.data.data[0].username);
+        LoginData.Login(access_token, updated.data.data[0].username, updated.data.data[0].goals);
 
         router.push("/activities");
       } catch (error) {

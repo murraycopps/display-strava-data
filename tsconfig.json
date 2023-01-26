@@ -16,6 +16,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/activities/index.tsx/index.tsx", "pages/api/users.ts", "pages/api/users.ts", "lib/mongodb.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/activity/index.tsx/index.tsx", "papages/api/users.js "papages/api/users.js "lilib/mongodb.ts,
   "exclude": ["node_modules"]
 }

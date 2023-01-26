@@ -4,30 +4,49 @@ export default class LoginData {
     static username = ''
     static goals = []
 
-    static Login( accessToken, username, goals ){
+    static Login(accessToken, username, goals) {
         this.loggedIn = true
         this.accessToken = accessToken
         this.username = username
         this.goals = goals
+
+        sessionStorage.setItem("accessToken", LoginData.accessToken);
+        sessionStorage.setItem("username", LoginData.username);
+        sessionStorage.setItem("goals", JSON.stringify(LoginData.goals));
     }
 
-    static isLoggedIn(){
+    static isLoggedIn() {
         return this.loggedIn
     }
 
-    static getAccessToken(){
+    static getAccessToken() {
         return this.accessToken
     }
 
-    static setAccessToken(token){
+    static setAccessToken(token) {
         this.accessToken = token
-    }  
+        sessionStorage.setItem("accessToken", LoginData.accessToken);
+    }
 
-    static getUsername(){
+    static getUsername() {
         return this.username
     }
 
-    static getGoals(){
+    static getGoals() {
         return this.goals
+    }
+
+    static getStorage() {
+        if (this.loggedIn) return
+
+        this.accessToken = sessionStorage.getItem("accessToken");
+        this.username = sessionStorage.getItem("username");
+        this.goals = JSON.parse(sessionStorage.getItem("goals"));
+
+        console.log(!!this.accessToken, !!this.username, !!this.goals)
+
+        if(this.accessToken && this.username && this.goals) {
+            this.loggedIn = true
+        }
     }
 }

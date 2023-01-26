@@ -89,8 +89,8 @@ export default function HomePage() {
         );
         const { data } = response;
 
-        setActivities(data);
-        localStorage.setItem("activities", JSON.stringify(data));
+        setActivities(data.filter((activity: any) => activity.type === "Run"));
+        localStorage.setItem("activities", JSON.stringify(data))
         console.log(data);
       } catch (error: any) {
         console.log(error);
@@ -114,14 +114,13 @@ export default function HomePage() {
       }
     }
 
-    getLoggedInAthleteActivities(1, 30);
+    getLoggedInAthleteActivities(1, 60);
     fetchData();
     const newExpirationTime = Date.now() + 240 * 1000; // 15 minutes from now
     localStorage.setItem("expirationTime", newExpirationTime.toString());
     localStorage.setItem("username", LoginData.getUsername());
     console.log(LoginData.getUsername());
   }, [accessToken, router]);
-
 
   if (!LoginData.isLoggedIn()) {
     return (

@@ -15,6 +15,17 @@ export default class LoginData {
         sessionStorage.setItem("goals", JSON.stringify(LoginData.goals));
     }
 
+    static Logout(){
+        this.loggedIn = false
+        this.accessToken = ''
+        this.username = ''
+        this.goals = []
+        
+        sessionStorage.removeItem("accessToken")
+        sessionStorage.removeItem("username")
+        sessionStorage.removeItem("goals")
+    }
+
     static isLoggedIn() {
         return this.loggedIn
     }

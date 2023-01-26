@@ -5,8 +5,10 @@ import {
   faRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { outTime } from "../scripts";
+import LoginData from "../scripts/logindata";
 
 export default function ProfileCard({
   data,
@@ -19,11 +21,12 @@ export default function ProfileCard({
   const [showShoes, setShowShoes] = useState(false);
   const [usedStats, setUsedStats] = useState([] as any);
 
+  const router = useRouter();
   useEffect(() => {
     if (!stats) return;
     setUsedStats(showYear ? stats.ytd_run_totals : stats.all_run_totals);
   }, [stats, showYear]);
-  
+
   return (
     <div className="flex flex-col h-auto pt-8 overflow-x-hidden profile-sizing lg:h-screen">
       <div className="flex flex-row flex-wrap gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
@@ -84,7 +87,7 @@ export default function ProfileCard({
           Toggle
         </button>
       </div>
-      <div className="flex flex-row flex-wrap gap-4 p-8 bg-gray-700 rounded-md lg:ml-4">
+      <div className="flex flex-row flex-wrap gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
         <button
           className="w-full p-2 bg-gray-600 rounded-md hover:bg-gray-500"
           onClick={() => setShowShoes(!showShoes)}
@@ -109,6 +112,17 @@ export default function ProfileCard({
             ))}
           </ul>
         )}
+      </div>
+      <div className="flex flex-row flex-wrap gap-4 p-4 bg-gray-700 rounded-md lg:ml-4">
+        <button
+          className="w-full p-2 bg-gray-600 rounded-md hover:bg-gray-500"
+          onClick={() => {
+            LoginData.Logout();
+            router.reload();
+          }}
+        >
+          Logout
+        </button>
       </div>
       <div className="lg:grow"></div>
       <p className="hidden p-4 mt-4 ml-4 text-lg text-center bg-gray-700 rounded-t-lg lg:block">

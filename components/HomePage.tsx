@@ -90,7 +90,7 @@ export default function HomePage() {
         const { data } = response;
 
         setActivities(data.filter((activity: any) => activity.type === "Run"));
-        localStorage.setItem("activities", JSON.stringify(data))
+        localStorage.setItem("activities", JSON.stringify(data.filter((activity: any) => activity.type === "Run")))
         console.log(data);
       } catch (error: any) {
         console.log(error);

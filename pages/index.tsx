@@ -8,7 +8,7 @@ export default function Page() {
   useEffect(() => {
     LoginData.getStorage();
     setLoggedIn(LoginData.isLoggedIn());
-  }, []);
+  }, [LoginData.isLoggedIn()]);
   
   return <div>{loggedIn ? <HomePage /> : <LandingPage />}</div>;
 }

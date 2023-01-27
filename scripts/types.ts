@@ -9,7 +9,7 @@ type User = {
 };
 
 type Goal = {
-    _id: number;
+    id: number;
     name: string;
     description: string;
     completed: boolean;

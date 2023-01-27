@@ -122,5 +122,5 @@ export async function getServerSideProps(context: any) {
       users: users,
       url: fullUrl,
     },
-  };
+  }
 }

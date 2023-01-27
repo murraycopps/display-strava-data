@@ -5,6 +5,7 @@ import {
   faRunning,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { outTime } from "../scripts";
@@ -87,7 +88,7 @@ export default function ProfileCard({
           Toggle
         </button>
       </div>
-      <div className="flex flex-row flex-wrap gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
+      {/* <div className="flex flex-row flex-wrap gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
         <button
           className="w-full p-2 bg-gray-600 rounded-md hover:bg-gray-500"
           onClick={() => setShowShoes(!showShoes)}
@@ -112,6 +113,20 @@ export default function ProfileCard({
             ))}
           </ul>
         )}
+      </div> */}
+      <div className="grid grid-cols-2 gap-4 p-8 mb-4 bg-gray-700 rounded-md lg:ml-4">
+        <Link
+          className="w-full p-2 text-center bg-gray-600 rounded-md hover:bg-gray-500"
+          href="/profile"
+        >
+          View Profile
+        </Link>
+        <Link
+          className="w-full p-2 text-center bg-gray-600 rounded-md hover:bg-gray-500"
+          href="/goals"
+        >
+          Manage Goals
+        </Link>
       </div>
       <div className="flex flex-row flex-wrap gap-4 p-4 bg-gray-700 rounded-md lg:ml-4">
         <button

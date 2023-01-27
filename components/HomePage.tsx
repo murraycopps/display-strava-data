@@ -144,32 +144,6 @@ export default function HomePage() {
         <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800 lg:flex-row lg:items-start">
             <ProfileCard data={data} stats={stats}/>
             <RunList activities={activities}/>
-            {/* <div className="p-8 mt-8 mr-4 bg-gray-700 right-row-sizing">
-        <h2 className="text-2xl text-center">Goals</h2>
-        <div className="flex flex-col gap-4">
-          {Logindata.getGoals().length ? (
-            Logindata.getGoals().map((goal: any) => (
-              <div
-                key={goal.id}
-                className="flex flex-row justify-between p-4 bg-gray-600 rounded-md"
-              >
-                <div className="flex flex-col justify-center">
-                  <h2 className="text-lg">{goal.name}</h2>
-                  <p className="text-sm">{goal.description}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center">No Goals</p>
-          )}
-          <Link
-            href="/goals"
-            className="p-2 text-center bg-gray-600 rounded-md"
-          >
-            Manage Goals
-          </Link>
-        </div>
-      </div> */}
         </div>
     );
 }

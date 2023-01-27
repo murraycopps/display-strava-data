@@ -52,15 +52,15 @@ export default function LoginPage({
           accessToken: access_token,
           refreshToken: refresh_token,
           expiresAt: expires_at,
-        });
+        })
 
-        LoginData.Login(access_token, username, user.goals || [])
+        LoginData.Login(access_token, username, user.goals || [], user._id )
 
         router.push("/");
         return
       }
       if(!user.accessToken) return
-      LoginData.Login(user.accessToken, username, user.goals || [])
+      LoginData.Login(user.accessToken, username, user.goals || [], user._id)
 
       router.push("/");
     } else {

@@ -26,8 +26,8 @@ export default function Goals() {
 }
 
 const GoalCard: FC<{ goal: Goal }> = ({ goal }) => (
-  <div className="p-2 bg-gray-900 rounded-lg">
+  <Link className="p-2 bg-gray-900 rounded-lg" href={`/goals/${"a"}`}>
     <h2 className="text-2xl">{goal.name}</h2>
     <p className="text-base">{goal.description}</p>
-  </div>
+  </Link>
 )

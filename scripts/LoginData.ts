@@ -5,19 +5,19 @@ export default class LoginData {
     static accessToken = ''
     static username = ''
     static goals: Goal[] = []
-    static id: number = 0
+    static _id: string = ''
 
-    static Login(accessToken: string, username: string, goals: Goal[], id: number){
+    static Login(accessToken: string, username: string, goals: Goal[], id: string){
         this.loggedIn = true
         this.accessToken = accessToken
         this.username = username
         this.goals = goals
-        this.id = id
+        this._id = id
 
         sessionStorage.setItem("accessToken", this.accessToken)
         sessionStorage.setItem("username", this.username)
         sessionStorage.setItem("goals", JSON.stringify(this.goals))
-        sessionStorage.setItem("id", this.id.toString())
+        sessionStorage.setItem("id", this._id)
     }
 
     static Logout(){
@@ -59,7 +59,7 @@ export default class LoginData {
     }
 
     static getUserID() {
-        return this.id
+        return this._id
     }
 
     static getStorage() {
@@ -68,9 +68,9 @@ export default class LoginData {
         this.accessToken = sessionStorage.getItem("accessToken") || ''
         this.username = sessionStorage.getItem("username") || ''
         this.goals = JSON.parse(sessionStorage.getItem("goals") || '{}')
-        this.id = parseInt(sessionStorage.getItem("id") || '0')
+        this._id = sessionStorage.getItem("id") || ''
 
-        if(this.accessToken && this.username && this.goals && this.id) {
+        if(this.accessToken && this.username && this.goals && this._id) {
             this.loggedIn = true
         }
     }

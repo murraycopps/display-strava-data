@@ -1,10 +1,22 @@
 import axios from "axios";
 import Link from "next/link";
-import { FC } from "react";
+import { useRouter } from "next/router";
+import { FC, useEffect } from "react";
 import LoginData from "../../scripts/LoginData";
 import { Goal } from "../../scripts/types";
 
 export default function Goals() {
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!LoginData.isLoggedIn()) {
+      LoginData.getStorage()
+      if (!LoginData.isLoggedIn()) {
+        router.push("/")
+      }
+    }
+  }, [LoginData.isLoggedIn()])
+
   return (
     <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800">
       <div className="px-16 py-4 m-4 text-center bg-gray-700 rounded-lg">
@@ -30,4 +42,4 @@ const GoalCard: FC<{ goal: Goal }> = ({ goal }) => (
     <h2 className="text-2xl">{goal.name}</h2>
     <p className="text-base">{goal.description}</p>
   </Link>
-)
+);

@@ -1,19 +1,30 @@
 import axios from "axios";
-import { useRef } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 import LoginData from "../../scripts/LoginData";
 import { Goal } from "../../scripts/types";
 
-
-export default function CreateGoal({url}: {url: string}) {
+export default function CreateGoal({ url }: { url: string }) {
   const formRef = useRef<HTMLFormElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+   if(!LoginData.isLoggedIn()){
+      LoginData.getStorage()
+      if(!LoginData.isLoggedIn()){
+        router.push("/")
+      }
+   }
+  }, [])
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formRef.current) return;
-    const formData = new FormData(formRef.current)
-    const name = formData.get("name")
-    const description = formData.get("description")
-    const id = getUnusedID()
+    const formData = new FormData(formRef.current);
+    const name = formData.get("name");
+    const description = formData.get("description");
+    const id = getUnusedID();
     const goal: Goal = {
       id,
       name: name as string,
@@ -21,20 +32,23 @@ export default function CreateGoal({url}: {url: string}) {
       completed: false,
       createdAt: Date.now(),
       updatedAt: Date.now(),
+    };
+
+    console.log(goal);
+    LoginData.addGoal(goal);
+
+    console.log(LoginData.getGoals(), LoginData.getUserID(), "here");
+
+    const res = await axios.put(`${url}/api/users`, {
+      _id: LoginData.getUserID(),
+      goals: LoginData.getGoals(),
+    });
+    console.log(res);
+
+    if (res.status === 200) {
+      router.push("/goals");
     }
-
-    console.log(goal)
-    LoginData.addGoal(goal)
-
-    axios.put(`${url}/api/users`, {
-        _id: LoginData.getUserID(),
-        goals: LoginData.getGoals()
-      })
-      .then((res) => {
-        console.log(res.data)
-      })
-
-  }
+  };
   return (
     <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800">
       <div className="px-16 py-4 m-4 text-center bg-gray-700 rounded-lg">
@@ -85,15 +99,14 @@ const getUnusedID = () => {
   return id;
 };
 
-
 export async function getServerSideProps(context: any) {
-    const host = context.req.headers.host;
-    const url = host.includes("localhost") ? "http://" : "https://";
-    const fullUrl = url + host;
+  const host = context.req.headers.host;
+  const url = host.includes("localhost") ? "http://" : "https://";
+  const fullUrl = url + host;
 
-    return {
-      props: {
-        url: fullUrl,
-      },
-    }
-  }
+  return {
+    props: {
+      url: fullUrl,
+    },
+  };
+}

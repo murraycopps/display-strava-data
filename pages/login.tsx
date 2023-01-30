@@ -117,7 +117,7 @@ export async function getServerSideProps(context: any) {
   const host = context.req.headers.host;
   const url = host.includes("localhost") ? "http://" : "https://";
   const fullUrl = url + host;
-  let users = [] as any[];
+  let users = [] as User[];
   await axios
     .get(`${fullUrl}/api/users`)
     .then((response) => {

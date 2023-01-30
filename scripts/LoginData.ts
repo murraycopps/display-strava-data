@@ -1,4 +1,5 @@
-import {Goal} from "./types";
+import axios from "axios";
+import { Goal } from "./types";
 
 export default class LoginData {
     static loggedIn = false
@@ -7,7 +8,7 @@ export default class LoginData {
     static goals: Goal[] = []
     static _id: string = ''
 
-    static Login(accessToken: string, username: string, goals: Goal[], id: string){
+    static Login(accessToken: string, username: string, goals: Goal[], id: string) {
         this.loggedIn = true
         this.accessToken = accessToken
         this.username = username
@@ -20,12 +21,12 @@ export default class LoginData {
         sessionStorage.setItem("id", this._id)
     }
 
-    static Logout(){
+    static Logout() {
         this.loggedIn = false
         this.accessToken = ''
         this.username = ''
         this.goals = []
-        
+
         sessionStorage.removeItem("accessToken")
         sessionStorage.removeItem("username")
         sessionStorage.removeItem("goals")
@@ -52,10 +53,54 @@ export default class LoginData {
     static getGoals() {
         return this.goals
     }
-    
+
     static addGoal(goal: Goal) {
         this.goals.push(goal)
         sessionStorage.setItem("goals", JSON.stringify(LoginData.goals));
+    }
+
+    static async updateGoals(url: string) {
+        const { data } = await axios.get(`${url}/api/users`)
+        const user = data.data.find((user: any) => user.username === this.username)
+        this.goals = user.goals
+        sessionStorage.setItem("goals", JSON.stringify(LoginData.goals))
+    }
+
+    static completeGoal(id: number, url: string) {
+        this.goals = this.goals.map((goal) => {
+            if (goal.id === id) {
+                goal.completed = true
+            }
+            return goal
+        })
+        sessionStorage.setItem("goals", JSON.stringify(LoginData.goals))
+        axios.put(`${url}/api/users`, {
+            _id: this._id,
+            goals: this.goals
+        })
+    }
+
+    static deleteGoal(id: number, url: string) {
+        this.goals = this.goals.filter((goal) => goal.id !== id)
+        sessionStorage.setItem("goals", JSON.stringify(LoginData.goals))
+        axios.put(`${url}/api/users`, {
+            _id: this._id,
+            goals: this.goals
+        })
+    }
+
+    static updateGoal(goal: Goal, url: string) {
+        this.goals = this.goals.map((g) => {
+            if (g.id === goal.id) {
+                return goal
+            }
+            return g
+        })
+        sessionStorage.setItem("goals", JSON.stringify(LoginData.goals))
+        axios.put(`${url}/api/users`, {
+            _id: this._id,
+            goals: this.goals
+        })
     }
 
     static getUserID() {
@@ -70,7 +115,7 @@ export default class LoginData {
         this.goals = JSON.parse(sessionStorage.getItem("goals") || '{}')
         this._id = sessionStorage.getItem("id") || ''
 
-        if(this.accessToken && this.username && this.goals && this._id) {
+        if (this.accessToken && this.username && this.goals && this._id) {
             this.loggedIn = true
         }
     }

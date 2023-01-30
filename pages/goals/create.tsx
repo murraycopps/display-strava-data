@@ -13,9 +13,11 @@ export default function CreateGoal({ url }: { url: string }) {
       LoginData.getStorage()
       if(!LoginData.isLoggedIn()){
         router.push("/")
+        return
       }
    }
-  }, [])
+   LoginData.updateGoals(url)
+  }, [LoginData.isLoggedIn()])
   
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -99,7 +101,7 @@ const getUnusedID = () => {
   return id;
 };
 
-export async function getServerSideProps(context: any) {
+export function getServerSideProps(context: any) {
   const host = context.req.headers.host;
   const url = host.includes("localhost") ? "http://" : "https://";
   const fullUrl = url + host;

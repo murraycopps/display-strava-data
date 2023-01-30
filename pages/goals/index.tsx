@@ -1,21 +1,23 @@
-import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC, useEffect } from "react";
+import { useEffect } from "react";
+import GoalCard from "../../components/GoalCard";
 import LoginData from "../../scripts/LoginData";
 import { Goal } from "../../scripts/types";
 
-export default function Goals() {
-  const router = useRouter()
+export default function Goals({ url }: { url: string }) {
+  const router = useRouter();
 
   useEffect(() => {
     if (!LoginData.isLoggedIn()) {
-      LoginData.getStorage()
+      LoginData.getStorage();
       if (!LoginData.isLoggedIn()) {
-        router.push("/")
+        router.push("/");
+        return;
       }
     }
-  }, [LoginData.isLoggedIn()])
+    LoginData.updateGoals(url);
+  }, [LoginData.isLoggedIn(), router]);
 
   return (
     <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800">
@@ -30,16 +32,22 @@ export default function Goals() {
       </Link>
       {LoginData.getGoals().length
         ? LoginData.getGoals().map((goal: Goal) => (
-            <GoalCard key={goal.id} goal={goal} />
+            <Link href={`/goals/${goal.id}`} key={goal.id}>
+              <GoalCard goal={goal} />
+            </Link>
           ))
         : "No Goals"}
     </div>
   );
 }
 
-const GoalCard: FC<{ goal: Goal }> = ({ goal }) => (
-  <Link className="p-2 bg-gray-900 rounded-lg" href={`/goals/${"a"}`}>
-    <h2 className="text-2xl">{goal.name}</h2>
-    <p className="text-base">{goal.description}</p>
-  </Link>
-);
+export function getServerSideProps(context: any) {
+  const host = context.req.headers.host;
+  const url = host.includes("localhost") ? "http://" : "https://";
+  const fullUrl = url + host;
+  return {
+    props: {
+      url: fullUrl,
+    },
+  };
+}

@@ -61,18 +61,6 @@ export default function LandingPage() {
                         Login
                     </Link>
                 </div>
-                {/*<button*/}
-                {/*onClick={() => {*/}
-                {/*    if (index === 0) {*/}
-                {/*        setIndex(3)*/}
-                {/*    } else {*/}
-                {/*        setIndex(index - 1)*/}
-                {/*    }*/}
-                {/*}*/}
-                {/*}*/}
-                {/*>*/}
-                {/*    next*/}
-                {/*</button>*/}
             </div>
         </div>
     );

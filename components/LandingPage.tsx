@@ -2,19 +2,20 @@ import Link from "next/link";
 import Image from "next/image";
 import {useEffect, useState} from "react";
 
+const images = [
+    "/mtnrun.jpg",
+    "/runimg.jpg",
+    "/runner-background.jpg",
+    "/track.jpg",
+];
+const style = [
+    "opacity-10 scale-150",
+    "opacity-25",
+    "opacity-10",
+    "opacity-20",
+]
+
 export default function LandingPage() {
-    const images = [
-        "/mtnrun.jpg",
-        "/runimg.jpg",
-        "/runner-background.jpg",
-        "/track.jpg",
-    ];
-    const style = [
-        "opacity-10 scale-150",
-        "opacity-25",
-        "opacity-10",
-        "opacity-20",
-    ]
     const [index, setIndex] = useState(0)
 
     useEffect(() => {
@@ -36,6 +37,7 @@ export default function LandingPage() {
                 className={`absolute top-0 left-0 w-full h-full object-cover ${style[index]}`}
                 width={1920}
                 height={1080}
+                priority={true}
             />
 
 

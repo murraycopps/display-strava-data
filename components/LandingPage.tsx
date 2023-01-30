@@ -37,15 +37,21 @@ export default function LandingPage() {
           <link key={index} rel="preload" href={image} as="image" />
         ))}
       </Head>
+
       <div className="flex flex-col items-center justify-center h-screen gap-4 text-white bg-gray-800">
-        <Image
-          src={images[index]}
-          alt="background image"
-          className={`absolute top-0 left-0 w-full h-full object-cover ${style[index]}`}
-          width={1920}
-          height={1080}
-          priority={true}
-        />
+        {images.map((img, i) => (
+          <Image
+            key={i}
+            src={img}
+            alt="background image"
+            className={`absolute top-0 left-0 w-full h-full object-cover ${
+              style[i]
+            } ${i === index ? "block" : "hidden"}`}
+            width={1920}
+            height={1080}
+            priority={true}
+          />
+        ))}
 
         <div className="z-10 flex flex-col items-center justify-center h-screen gap-4 text-white">
           <h1 className="flex items-end font-medium text-left text-8xl">

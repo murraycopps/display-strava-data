@@ -11,22 +11,9 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { outTime } from "../../scripts";
 import LoginData from "../../scripts/LoginData";
+import Image from "next/image";
 
-export async function getStaticProps() {
-  return {
-    props: {
-      clientId: process.env.STRAVA_CLIENT_ID || "",
-      clientSecret: process.env.STRAVA_CLIENT_SECRET || "",
-    },
-  };
-}
-
-type Props = {
-  clientId: string;
-  clientSecret: string;
-};
-
-export default function HomePage({ clientId, clientSecret }: Props) {
+export default function HomePage() {
   const router = useRouter();
 
   const [data, setData] = useState(null as any);
@@ -188,10 +175,12 @@ export default function HomePage({ clientId, clientSecret }: Props) {
               </div>
             </div>
           </div>
-          <img
+          <Image
             src={data.profile}
             className="rounded-full sm:w-36 sm:h-36 w-28 h-28"
             alt="Profile Picture"
+            width={150}
+            height={150}
           />
           <h2 className="w-full text-xl font-bold text-center">
             {showYear ? "Yearly" : "Lifetime"} Stats

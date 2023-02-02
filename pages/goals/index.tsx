@@ -19,7 +19,7 @@ export default function Goals({ url }: { url: string }) {
       }
     }
     LoginData.updateGoals(url);
-  }, [LoginData.isLoggedIn(), router]);
+  }, [router, url]);
 
   return (
     <main className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800">

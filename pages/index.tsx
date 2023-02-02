@@ -5,10 +5,11 @@ import LoginData from "../scripts/LoginData";
 
 export default function Page() {
   const [loggedIn, setLoggedIn] = useState(LoginData.isLoggedIn());
+
   useEffect(() => {
     LoginData.getStorage();
     setLoggedIn(LoginData.isLoggedIn());
-  }, [LoginData.isLoggedIn()]);
+  }, []);
   
   return <div>{loggedIn ? <HomePage /> : <LandingPage />}</div>;
 }

@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { outTime } from "../scripts";
 import LoginData from "../scripts/LoginData";
+import Image from "next/image";
 
 export default function ProfileCard({
   data,
@@ -19,7 +20,6 @@ export default function ProfileCard({
   stats: any;
 }) {
   const [showYear, setShowYear] = useState(false);
-  const [showShoes, setShowShoes] = useState(false);
   const [usedStats, setUsedStats] = useState([] as any);
 
   const router = useRouter();
@@ -46,10 +46,12 @@ export default function ProfileCard({
             </div>
           </div>
         </div>
-        <img
+        <Image
           src={data.profile}
           className="rounded-full sm:w-36 sm:h-36 w-28 h-28"
           alt="Profile Picture"
+          width={192}
+          height={192}
         />
         <h2 className="w-full text-xl font-bold text-center">
           {showYear ? "Yearly" : "Lifetime"} Stats

@@ -24,7 +24,7 @@ export default function Page({ url }: { url: string }) {
     } else {
       router.push("/goals");
     }
-  }, [LoginData.isLoggedIn()]);
+  }, [router, url]);
 
   return (
     <div className="flex flex-col items-center gap-4 font-sans text-white bg-gray-800">

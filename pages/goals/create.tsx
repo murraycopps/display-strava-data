@@ -17,7 +17,7 @@ export default function CreateGoal({ url }: { url: string }) {
       }
    }
    LoginData.updateGoals(url)
-  }, [LoginData.isLoggedIn()])
+  }, [router, url])
   
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

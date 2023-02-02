@@ -40,6 +40,7 @@ function AuthCallbackPage({ query, clientID, clientSecret, url }: Props) {
       router.push("/activities");
       return;
     }
+
     async function fetchData() {
       try {
         const response = await axios.post(

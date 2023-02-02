@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import LoginData from "../../../scripts/LoginData";
@@ -26,7 +25,7 @@ export default function Page({ url }: { url: string }) {
     } else {
       router.push("/goals");
     }
-  }, [LoginData.isLoggedIn()]);
+  }, [router, url]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

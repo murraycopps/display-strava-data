@@ -4,7 +4,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https:',
+        protocol: 'https',
         hostname: 'dgalywyr863hv.cloudfront.net',
         port: '',
         pathname: '/pictures/athletes/*/*/*/*',

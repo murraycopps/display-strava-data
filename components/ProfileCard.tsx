@@ -49,7 +49,7 @@ export default function ProfileCard({
         </div>
         <Image
           src={data.profile}
-          className="rounded-full sm:w-36 sm:h-36 w-28 h-28"
+          className="object-cover rounded-full sm:w-36 sm:h-36 w-28 h-28"
           alt="Profile Picture"
           width={192}
           height={192}

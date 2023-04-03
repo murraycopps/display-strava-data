@@ -49,7 +49,7 @@ export default function LoginPage({
       .then((response) => {
         setErrorMessage("Account created");
         router.push(
-          `https://www.strava.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all,read,profile:read_all,read_all`
+          `https://www.strava.com/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${url}/data?_id=${response.data.data.insertedId}&approval_prompt=force&scope=activity:read_all,read,profile:read_all,read_all,activity:read_all,activity:read`
         );
       })
       .catch((error) => {
